@@ -1,0 +1,23 @@
+# Python generated files
+__pycache__/
+*.py[cod]
+
+# Local database and SQLite files
+*.db
+*.sqlite
+*.sqlite3
+
+# Backups
+backups/
+
+# Temporary test files
+test_data/*
+
+# Virtual environments
+venv/
+.venv/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
