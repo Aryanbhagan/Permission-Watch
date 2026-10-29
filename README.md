@@ -56,6 +56,7 @@ sudo apt install python3-watchdog python3-psutil
 1. Clone the Repository
 
 git clone https://github.com/Aryanbhagan/Permission-Watch.git
+
 cd Permission-Watch
 
 2. Set Up the Environment
