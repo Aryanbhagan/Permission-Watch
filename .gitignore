@@ -21,3 +21,4 @@ venv/
 .env
 .env.*
 !.env.example
+*.backup

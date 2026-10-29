@@ -31,13 +31,27 @@ def get_name(database, identifier):
     except (KeyError, OSError):
         return str(identifier)
 
-
 def scan_files(watch_dir):
-    """Take a snapshot of files and directories."""
+    """Take a snapshot of files and directories, excluding SQLite files."""
     snapshot = {}
 
+    ignored_files = {
+        "permission_watch.db",
+        "permission_watch.db-journal",
+        "permission_watch.db-wal",
+        "permission_watch.db-shm",
+    }
+
     for root, dirs, files in os.walk(watch_dir):
+        dirs[:] = [
+            name for name in dirs
+            if name not in {".venv", "__pycache__", "backups"}
+        ]
+
         for name in dirs + files:
+            if name in ignored_files:
+                continue
+
             path = Path(root) / name
 
             try:

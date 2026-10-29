@@ -11,6 +11,16 @@ from config import get_watch_directory
 
 class PermissionWatchHandler(FileSystemEventHandler):
 
+    IGNORED_FILES = {
+        "permission_watch.db",
+        "permission_watch.db-journal",
+        "permission_watch.db-wal",
+        "permission_watch.db-shm",
+    }
+
+    def should_ignore(self, path):
+        return Path(path).name in self.IGNORED_FILES
+
     def on_created(self, event):
         if not event.is_directory:
             self.record_event(
@@ -30,7 +40,7 @@ class PermissionWatchHandler(FileSystemEventHandler):
             )
 
     def on_moved(self, event):
-        if not event.is_directory:
+        if not event.is_directory and not self.should_ignore(event.src_path):
             self.record_event(
                 "FILE_RENAMED",
                 event.src_path,

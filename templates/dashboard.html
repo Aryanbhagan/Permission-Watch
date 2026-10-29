@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permission Watch | Security Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">PW</div>
+            <div>
+                <h2>Permission Watch</h2>
+                <span>LINUX SECURITY MONITOR</span>
+            </div>
+        </div>
+
+        <p class="nav-heading">WORKSPACE</p>
+        <nav>
+            <a href="#overview" class="nav-link active">▦ &nbsp; Overview</a>
+            <a href="#activity" class="nav-link">◷ &nbsp; Activity Monitor</a>
+            <a href="#analytics" class="nav-link">▥ &nbsp; Risk Analytics</a>
+            <a href="#history" class="nav-link">☷ &nbsp; Event History</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="status-indicator"></div>
+            <div>
+                <strong>Dashboard Online</strong>
+                <span>Database connection ready</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">SECURITY OPERATIONS</p>
+                <h1>Security Overview</h1>
+                <p class="subtitle">Monitor file activity and permission-related risks.</p>
+            </div>
+            <div class="topbar-right">
+                <span class="live-badge"><span></span> DASHBOARD LIVE</span>
+                <div id="current-time" class="current-time">Loading time...</div>
+            </div>
+        </header>
+        
+        <section id="folder-control" class="folder-control-panel">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">MONITORING CONFIGURATION</p>
+            <h2>Select Directory</h2>
+            <p class="subtitle">Choose a folder inside your Ubuntu home directory.</p>
+        </div>
+        <span id="monitor-status" class="status-badge">● STOPPED</span>
+    </div>
+
+    <div class="folder-browser">
+        <div class="folder-path-bar">
+            <span class="folder-icon">📁</span>
+            <span id="current-folder-path">Loading folders...</span>
+            <button type="button" id="parent-folder-btn" disabled>↑ Up</button>
+        </div>
+
+        <div id="folder-list" class="folder-list">
+            <p>Loading Ubuntu directories...</p>
+        </div>
+
+        <div class="selected-folder">
+            <strong>Selected folder:</strong>
+            <span id="selected-folder-path">None selected</span>
+        </div>
+
+        <div class="monitor-controls">
+            <button type="button" id="start-monitor-btn" class="btn-start">
+                ▶ Start Monitoring
+            </button>
+            <button type="button" id="stop-monitor-btn" class="btn-stop" disabled>
+                ■ Stop Monitoring
+            </button>
+        </div>
+
+        <p id="monitor-message" class="monitor-message">
+            Select a directory to begin.
+        </p>
+    </div>
+</section>
+        <section id="overview">
+            <div class="section-heading">
+                <div>
+                    <h2>System Overview</h2>
+                    <p>Summary of recorded monitoring events</p>
+                </div>
+                <button class="refresh-button" onclick="refreshDashboard()">↻ Refresh</button>
+            </div>
+
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <div class="stat-top"><span>Total Events</span><span class="stat-icon blue">▤</span></div>
+                    <h3 id="total-events">—</h3>
+                    <p>All recorded events</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top"><span>High Risk</span><span class="stat-icon red">⚠</span></div>
+                    <h3 id="high-risk">—</h3>
+                    <p>Critical permission findings</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top"><span>Medium Risk</span><span class="stat-icon orange">◈</span></div>
+                    <h3 id="medium-risk">—</h3>
+                    <p>Moderate-risk findings</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top"><span>Permission Events</span><span class="stat-icon purple">⌘</span></div>
+                    <h3 id="permission-events">—</h3>
+                    <p>Permission-related changes</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="analytics" class="analytics-grid">
+            <article class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Risk Distribution</h2>
+                        <p>Breakdown of recorded risk levels</p>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </article>
+
+            <article class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Event Categories</h2>
+                        <p>Distribution by event type</p>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="eventChart"></canvas>
+                </div>
+            </article>
+        </section>
+
+        <section id="activity" class="panel activity-panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Recent Activity</h2>
+                    <p>Latest events recorded in the database</p>
+                </div>
+                <span class="live-badge"><span></span> AUTO-REFRESH</span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>TIME</th>
+                            <th>EVENT</th>
+                            <th>FILE PATH</th>
+                            <th>RISK LEVEL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-events">
+                        <tr><td colspan="4" class="empty-state">Loading events...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="history" class="panel history-panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Event History</h2>
+                    <p>Inspect changes recorded by Permission Watch</p>
+                </div>
+                <input type="search" id="event-search" placeholder="Search file or event...">
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID / TIME</th>
+                            <th>EVENT TYPE</th>
+                            <th>FILE PATH</th>
+                            <th>OLD VALUE</th>
+                            <th>NEW VALUE</th>
+                            <th>RISK</th>
+                        </tr>
+                    </thead>
+                    <tbody id="event-history">
+                        <tr><td colspan="6" class="empty-state">Loading event history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer>
+            <span>Permission Watch <span class="footer-separator">/</span> Linux Security Monitoring</span>
+            <span>Data sourced from the local SQLite database</span>
+        </footer>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+
