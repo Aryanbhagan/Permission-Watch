@@ -53,22 +53,43 @@ sudo apt install python3-watchdog python3-psutil
 
 ## How to Run
 
-Clone the repository and enter the project directory:
+1. Clone the Repository
 
-```bash
-git clone <repository-url>
-cd FileWatcher
-```
+git clone https://github.com/Aryanbhagan/Permission-Watch.git
+cd Permission-Watch
 
-Start the integrated application:
+2. Set Up the Environment
 
-```bash
+Create and activate a Python virtual environment:
+
+python3 -m venv .venv
+source .venv/bin/activate
+
+Install the required dependencies:
+
+pip install flask watchdog psutil
+
+3. Start the Web Dashboard
+
+Run the dashboard:
+
+python dashboard.py
+
+Open your browser and visit:
+
+http://127.0.0.1:5000
+
+Select a directory, start monitoring, and view file activity and permission-related events through the dashboard. Use the dashboard controls to start or stop monitoring.
+
+Keep the terminal running while using the dashboard. Press Ctrl+C to stop the dashboard server.
+
+4. Run in Terminal Mode
+
+To use the original terminal-based monitoring application instead:
+
 python3 app.py
-```
 
-Enter the absolute path of an existing directory when prompted. Press Enter to use the default `test_data` directory.
-
-The application starts file activity monitoring and permission and ownership monitoring. Press `Ctrl+C` to stop monitoring.
+Enter the absolute path of an existing directory when prompted. Press Enter to use the default test_data directory.
 
 ## Database
 
